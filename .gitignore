@@ -1,2 +1,33 @@
-# Environment variables
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# Node.js
+node_modules/
+dist/
+
+# IDE and editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
