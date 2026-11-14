@@ -1,5 +1,6 @@
 from app.schemas.astronaut import (
     AstronautCreate,
+    AstronautUpdate,
     AstronautResponse,
 )
 
@@ -30,6 +31,7 @@ from app.schemas.health_observation import (
 
 __all__ = [
     "AstronautCreate",
+    "AstronautUpdate",
     "AstronautResponse",
     "SignupRequest",
     "LoginRequest",
