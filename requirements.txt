@@ -1,8 +1,18 @@
-﻿fastapi
-uvicorn
+﻿# FastAPI Backend
+fastapi
+uvicorn[standard]
+
+# Database
 sqlalchemy
 pg8000
+
+# Environment Configuration
 python-dotenv
+pydantic-settings
+
+# Validation and HTTP Requests
 email-validator
 httpx
+
+# AI Integration
 openai

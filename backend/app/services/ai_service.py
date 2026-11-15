@@ -1,4 +1,5 @@
 import json
+import re
 
 from fastapi import HTTPException, status
 from openai import (
@@ -10,24 +11,102 @@ from openai import (
 
 from app.core.config import settings
 
+
 GROQ_MODEL = "openai/gpt-oss-20b"
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
+
 
 SYSTEM_INSTRUCTION = """
 You are AstroHealth's general astronaut wellness information assistant.
 
 Your responsibilities:
-- Explain health readings in simple and clear language.
+- Explain the astronaut's actual available health readings.
+- Use the latest readings provided in the health context.
+- Mention the value and unit when relevant to the question.
+- Mention whether a reading is simulated, manual, or sensor-based when relevant.
+- Never invent or assume missing readings.
+- If a relevant reading is unavailable, clearly say so.
+- If a reading is old, mention its timestamp and do not call it current.
 - Provide general wellness and safety information.
-- Use only the health information provided in the request.
-- Never invent missing health readings.
 - Never diagnose diseases or prescribe medication.
 - Never claim to replace a qualified medical professional.
-- If readings appear concerning, advise the astronaut to contact
-  the mission medical officer.
-- Clearly mention when the provided information is insufficient.
-- Keep responses clear, concise and safety-focused.
+- If readings appear concerning or the astronaut reports serious symptoms,
+  advise contacting the mission medical officer.
+
+RESPONSE FORMATTING RULES:
+- Respond in simple, professional English.
+- Use plain text only.
+- Do not use Markdown formatting.
+- Do not create Markdown tables.
+- Do not use bold, italic, headings with #, backticks, or decorative symbols.
+- Avoid unusual Unicode characters, fancy quotation marks, and long dashes.
+- Use ordinary punctuation.
+- Use short paragraphs.
+- Use simple numbered points or hyphen bullets only when necessary.
+- Keep the answer concise and directly answer the question.
 """
+
+
+def clean_ai_response(answer: str) -> str:
+    """Remove unnecessary Markdown and decorative formatting."""
+
+    if not answer:
+        return ""
+
+    cleaned_lines = []
+
+    for line in answer.splitlines():
+        line = line.strip()
+
+        if not line:
+            continue
+
+        # Remove Markdown table separator rows.
+        if re.fullmatch(r"[\s|:\-]+", line):
+            continue
+
+        # Convert Markdown table rows into readable plain text.
+        if "|" in line:
+            cells = [
+                cell.strip()
+                for cell in line.strip("|").split("|")
+                if cell.strip()
+            ]
+
+            if cells:
+                line = " - ".join(cells)
+
+        # Remove Markdown heading and emphasis syntax.
+        line = re.sub(r"^#{1,6}\s*", "", line)
+        line = re.sub(r"\*\*(.*?)\*\*", r"\1", line)
+        line = re.sub(r"__(.*?)__", r"\1", line)
+        line = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"\1", line)
+        line = line.replace("`", "")
+
+        # Normalize unusual punctuation.
+        replacements = {
+            "\u2018": "'",
+            "\u2019": "'",
+            "\u201c": '"',
+            "\u201d": '"',
+            "\u2013": "-",
+            "\u2014": "-",
+            "\u00a0": " ",
+            "\u2248": "approximately ",
+            "\u2022": "-",
+        }
+
+        for old, new in replacements.items():
+            line = line.replace(old, new)
+
+        # Remove excessive spaces.
+        line = re.sub(r"\s+", " ", line).strip()
+
+        if line:
+            cleaned_lines.append(line)
+
+    return "\n".join(cleaned_lines)
+
 
 async def generate_health_guidance(
     question: str,
@@ -49,13 +128,20 @@ async def generate_health_guidance(
     context = health_context or {}
 
     prompt = f"""
-Health information:
+The following health information belongs to the authenticated astronaut.
+
+Use this information to answer the question accurately.
+Do not invent readings or assume that missing values are available.
+
+HEALTH INFORMATION:
 {json.dumps(context, indent=2, default=str)}
 
-Astronaut's question:
+ASTRONAUT'S QUESTION:
 {question.strip()}
 
-Provide a clear, concise and safety-focused response.
+Answer directly using the latest relevant readings.
+If the relevant reading is missing, say that it is not available.
+Follow all plain-text formatting rules.
 """
 
     try:
@@ -81,7 +167,7 @@ Provide a clear, concise and safety-focused response.
                 detail="AI service returned an empty response.",
             )
 
-        return answer.strip()
+        return clean_ai_response(answer.strip())
 
     except APITimeoutError:
         raise HTTPException(
