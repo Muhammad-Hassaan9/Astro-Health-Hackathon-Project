@@ -1,479 +1,743 @@
-# 🚀 AstroHealth — Astronaut Health Monitoring System
+# AstroHealth 🚀
+### Astronaut Health Monitoring System
 
-AstroHealth is a web-based astronaut health monitoring system designed to monitor health indicators, identify unusual changes, generate alerts, and provide AI-powered health explanations and general well-being suggestions.
+AstroHealth is a web-based astronaut health monitoring prototype developed for **NASA Space Apps Challenge 2026 – Challenge 4: Create Health Monitoring Software for Astronauts on Space Missions.**
 
-The project aims to demonstrate how technology can support astronaut health monitoring during space missions through real-time data simulation, interactive visualizations, and AI assistance.
+The project aims to provide astronauts with a centralized platform to monitor their health metrics, review historical readings, receive health alerts, and interact with an AI-powered wellness assistant.
 
-> **Project Status:** Under Development  
-> **Project Type:** Web Application  
-> **Project Category:** Space Health Monitoring & AI
-
----
-
-## 📌 Table of Contents
-
-- [Project Overview](#-project-overview)
-- [Problem Statement](#-problem-statement)
-- [Project Objectives](#-project-objectives)
-- [Key Features](#-key-features)
-- [Health Indicators](#-health-indicators)
-- [Technology Stack](#-technology-stack)
-- [System Architecture](#-system-architecture)
-- [Project Structure](#-project-structure)
-- [Data Management](#-data-management)
-- [Application Workflow](#-application-workflow)
-- [Security and Privacy](#-security-and-privacy)
-- [Project Limitations](#-project-limitations)
-- [Future Goals](#-future-goals)
-- [Installation and Setup](#-installation-and-setup)
-- [Team and Contributions](#-team-and-contributions)
+AstroHealth currently uses simulated health data to demonstrate the functionality of a real-time astronaut health monitoring system. It is designed with the possibility of future integration with wearable devices and health sensors.
 
 ---
 
-## 🌌 Project Overview
+## Table of Contents
 
-Astronauts experience several physical and psychological challenges during space missions, including microgravity, space radiation, isolation, sleep disturbances, and changes in cardiovascular and other body systems.
-
-Monitoring these changes is important for understanding astronaut health and supporting their well-being during missions.
-
-AstroHealth aims to provide a centralized personal health monitoring experience for an astronaut through a web application.
-
-The system will use simulated health readings to demonstrate real-time monitoring, display health trends, generate alerts, and provide AI-powered explanations and general health suggestions.
-
-The application will initially focus on an individual astronaut's personal dashboard.
-
----
-
-## ⚠️ Problem Statement
-
-Space missions expose astronauts to environments that can affect their physical and psychological health.
-
-Traditional health monitoring approaches may not always provide an easily accessible, continuously updated overview of an astronaut's health information.
-
-AstroHealth aims to address this challenge by providing:
-
-- A personal health monitoring dashboard.
-- Real-time updates of health indicators.
-- Visual representation of health trends.
-- Alerts for unusual health readings.
-- AI-powered explanations and general well-being guidance.
+1. [Project Overview](#project-overview)
+2. [Objectives](#objectives)
+3. [Key Features](#key-features)
+4. [Technology Stack](#technology-stack)
+5. [System Architecture](#system-architecture)
+6. [Project Structure](#project-structure)
+7. [Health Monitoring](#health-monitoring)
+8. [Real-Time Communication](#real-time-communication)
+9. [Alert Management](#alert-management)
+10. [AI Health Assistant](#ai-health-assistant)
+11. [Authentication and Security](#authentication-and-security)
+12. [Database Design](#database-design)
+13. [API Endpoints](#api-endpoints)
+14. [Installation and Setup](#installation-and-setup)
+15. [Running the Application](#running-the-application)
+16. [Environment Configuration](#environment-configuration)
+17. [Current Limitations](#current-limitations)
+18. [Future Improvements](#future-improvements)
+19. [Disclaimer](#disclaimer)
 
 ---
 
-## 🎯 Project Objectives
+## Project Overview
 
-The main objectives of AstroHealth are:
+Astronauts operate in an environment where continuous health monitoring is important. Space missions can expose astronauts to conditions that affect cardiovascular health, oxygen levels, body temperature, physical activity, and sleep patterns.
 
-1. To demonstrate real-time astronaut health monitoring.
-2. To simulate health readings for demonstration purposes.
-3. To visualize health indicators and historical trends.
-4. To identify unusual readings and generate alerts.
-5. To integrate an AI assistant for health-related explanations and general suggestions.
-6. To provide a simple and accessible astronaut dashboard.
-7. To explore how software technologies can support human health monitoring during space missions.
+AstroHealth provides a centralized dashboard where an astronaut can:
+
+- View their latest health readings.
+- Monitor changes in health metrics.
+- Receive alerts when readings cross configured thresholds.
+- Review historical health observations.
+- Get general health explanations through an AI assistant.
+- View and update their astronaut profile.
+
+The application uses a React-based frontend, a FastAPI backend, a PostgreSQL database hosted through Supabase, and WebSockets for real-time communication.
+
+## Objectives
+
+The primary objectives of AstroHealth are:
+
+- Provide an accessible astronaut health monitoring interface.
+- Demonstrate real-time health data updates.
+- Store and retrieve health observations securely.
+- Identify potentially concerning readings through rule-based alerts.
+- Provide AI-assisted explanations of health information.
+- Establish a foundation for future wearable and sensor integration.
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-The following features are planned for the initial prototype.
+### 1. Personal Health Dashboard
 
-### 1. User Authentication
+The dashboard provides an overview of an astronaut's health information.
 
-- Secure user login.
-- Individual astronaut accounts.
-- Authentication through Supabase Auth.
-- Protected access to personal health information.
+It includes:
 
-### 2. Personal Health Dashboard
-
-A dedicated dashboard where an astronaut can view their own health information.
-
-It will include:
-
-- Current health indicators.
-- Health status overview.
-- Recent readings.
-- Health alerts.
+- Latest health metric readings.
+- Health status indicators.
 - Historical health trends.
+- Real-time connection status.
+- Simulated health reading generation.
+- Quick access to other application modules.
 
-### 3. Real-Time Health Monitoring
+### 2. Health Monitoring
 
-The system will generate simulated health readings at regular intervals.
+The health monitoring module handles different categories of health information.
 
-- Continuous updates during an active demo session.
-- Real-time communication using FastAPI WebSockets.
-- Automatic dashboard updates without manually refreshing the page.
+Currently supported metrics include:
 
-### 4. Health Alerts
+| Health Metric | Description |
+|---|---|
+| Heart Rate | Measures heartbeats per minute (BPM). |
+| SpO2 | Measures peripheral blood oxygen saturation. |
+| Body Temperature | Records body temperature. |
+| Physical Activity | Tracks activity-related observations. |
+| Sleep | Stores sleep-related observations. |
 
-The system will analyze incoming readings using predefined prototype rules.
+The system stores observations with timestamps, measurement units, data sources, and quality information.
 
-It will generate three types of health statuses:
+### 3. Historical Health Trends
 
-- **Normal:** Readings are within the configured prototype range.
-- **Warning:** A reading requires attention.
-- **Critical:** A reading has crossed a configured critical threshold.
+AstroHealth stores health observations and allows users to review historical data.
 
-Alerts will help demonstrate how unusual health changes can be identified.
+Charts help visualize changes in health readings over time.
 
-### 5. Health History and Visualization
+### 4. Alert Management
 
-- Historical health readings.
-- Interactive graphs and charts.
-- Health indicator trends.
-- Changes in readings over time.
+The application uses rule-based logic to identify readings that cross configured thresholds.
 
-### 6. AI Health Assistant
+Alerts contain:
 
-An AI-powered assistant integrated through the Google Gemini API.
+- Alert category.
+- Severity.
+- Title and message.
+- Recommended action.
+- Creation timestamp.
+- Current status.
 
-It will help users:
+Supported alert statuses:
 
-- Understand their health readings.
-- Understand why an alert was generated.
-- Receive general health and well-being suggestions.
-- Ask questions related to astronaut health and spaceflight challenges.
+- NEW
+- ACKNOWLEDGED
+- RESOLVED
 
-The project will use an existing pre-trained AI model. No custom AI model training or fine-tuning is planned for the initial prototype.
+### 5. AI Health Assistant
+
+AstroHealth integrates Groq-hosted AI through the OpenAI-compatible API.
+
+The assistant can:
+
+- Explain available health readings.
+- Answer questions about health metrics.
+- Provide general wellness suggestions.
+- Use the authenticated astronaut's latest available health readings as context.
+- Mention whether readings are simulated, manually entered, or sensor-based.
+- Explain when relevant information is unavailable.
+
+The assistant is designed for general wellness information and does not provide medical diagnoses or prescriptions.
+
+### 6. Responsive Interface
+
+The frontend is designed to support:
+
+- Desktop computers.
+- Laptops.
+- Tablets.
+- Mobile devices.
+
+The navigation sidebar supports collapsible desktop navigation and a mobile slide-out menu.
 
 ---
 
-## ❤️ Health Indicators
-
-The initial prototype will focus on the following indicators:
-
-| Indicator | Purpose | Data Source |
-|---|---|---|
-| Heart Rate | Monitor heart rate changes | Simulated |
-| SpO₂ | Demonstrate blood oxygen monitoring | Simulated |
-| Body Temperature | Monitor temperature changes | Simulated |
-| Physical Activity | Track activity levels | Simulated |
-| Sleep | Demonstrate sleep duration and patterns | Simulated |
-| Mood / Well-being | Represent self-reported psychological well-being | Simulated / User Input |
-
-These indicators are selected to demonstrate different aspects of astronaut health monitoring.
-
-The thresholds used for prototype alerts will be clearly identified as demonstration rules and not presented as NASA-approved medical limits.
-
----
-
-## 🛠️ Technology Stack
-
-The following technologies are selected for developing AstroHealth.
+## Technology Stack
 
 ### Frontend
 
 | Technology | Purpose |
 |---|---|
-| React.js | Building the user interface |
-| Vite | Frontend development environment and build tool |
-| JavaScript | Frontend programming language |
-| Tailwind CSS | Responsive styling |
-| Lucide React | Icons |
-| Recharts | Health graphs and data visualization |
+| React | User interface development |
+| Vite | Frontend development server and build tool |
+| JavaScript | Application logic |
+| Tailwind CSS v4 | Styling and responsive layouts |
+| React Router | Client-side navigation |
+| Axios | HTTP communication with backend |
+| Supabase JS | Supabase integration |
+| Lucide React | Interface icons |
+| Recharts | Health data visualization |
 
 ### Backend
 
 | Technology | Purpose |
 |---|---|
 | Python | Backend programming language |
-| FastAPI | Backend framework and REST APIs |
-| WebSockets | Real-time communication |
-
-### Database and Authentication
-
-| Technology | Purpose |
-|---|---|
+| FastAPI | REST API development |
+| SQLAlchemy | Database ORM |
 | PostgreSQL | Relational database |
-| Supabase | Managed PostgreSQL database platform |
-| Supabase Auth | User authentication and session management |
-
-### Artificial Intelligence
-
-| Technology | Purpose |
-|---|---|
-| Google Gemini API | AI-powered explanations and general health suggestions |
-
-### Development and Deployment
-
-| Technology | Purpose |
-|---|---|
-| Git | Version control |
-| GitHub | Source code management and team collaboration |
-| VS Code | Development environment |
-| Vercel | Frontend deployment |
-| Cloud Hosting | FastAPI backend deployment |
+| Supabase | Hosted PostgreSQL and authentication |
+| pg8000 | PostgreSQL database driver |
+| Pydantic | Data validation |
+| WebSockets | Real-time communication |
+| OpenAI Python SDK | AI provider integration |
+| Groq | AI inference provider |
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
-AstroHealth will follow a frontend-backend architecture.
+AstroHealth follows a frontend-backend architecture.
 
-### Main Components
+```text
+                 ASTRONAUT
+                     |
+                     |
+              REACT FRONTEND
+                     |
+          HTTP REST API / WebSocket
+                     |
+                     |
+               FASTAPI BACKEND
+                     |
+          +----------+----------+
+          |          |          |
+          |          |          |
+       AUTH       HEALTH       ALERTS
+       MODULE     MODULE       MODULE
+          |          |          |
+          +----------+----------+
+                     |
+              SQLALCHEMY ORM
+                     |
+                     |
+             SUPABASE POSTGRESQL
+                     
+                     
+              AI HEALTH ASSISTANT
+                     |
+                GROQ API
+                     |
+                AI RESPONSE
+                     |
+               REACT FRONTEND
+```
 
-**1. Frontend — React.js**
+### Application Workflow
 
-Provides the astronaut's personal dashboard, health visualizations, alerts, and AI assistant interface.
-
-**2. Backend — FastAPI**
-
-Handles:
-
-- API requests.
-- Authentication verification.
-- Health data processing.
-- Simulated reading generation.
-- Alert generation.
-- Database communication.
-- AI API integration.
-- WebSocket communication.
-
-**3. Database — Supabase PostgreSQL**
-
-Stores:
-
-- Astronaut profiles.
-- Health readings.
-- Historical health information.
-- Generated alerts.
-
-**4. Authentication — Supabase Auth**
-
-Manages user authentication and secure sessions.
-
-**5. AI Service — Gemini API**
-
-Processes permitted, non-identifying demo health information and generates explanations and general guidance.
-
-### Data Flow
-
-1. The astronaut logs into the application.
-2. The frontend communicates with the FastAPI backend.
-3. The backend verifies the user's authentication and permissions.
-4. Simulated health readings are generated.
-5. The backend processes and stores the readings in PostgreSQL.
-6. FastAPI WebSockets send updates to the connected frontend.
-7. The frontend displays updated health information.
-8. The backend evaluates readings and generates alerts.
-9. The AI assistant provides explanations and general suggestions when requested.
+1. The astronaut registers or logs in.
+2. Supabase authentication manages user authentication.
+3. The frontend sends authenticated requests to FastAPI.
+4. FastAPI validates the access token and identifies the astronaut.
+5. Health observations are retrieved from PostgreSQL.
+6. The frontend displays the available readings.
+7. WebSockets deliver real-time health updates and new alerts.
+8. The AI assistant receives the astronaut's latest available health context and generates a response.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
-The project will follow a monorepo structure.
+The project is organized into separate frontend and backend directories.
 
 ```text
 AstroHealth/
 │
 ├── backend/
+│   ├── app/
+│   │   ├── core/
+│   │   │   └── config.py
+│   │   │
+│   │   ├── crud/
+│   │   │   ├── astronaut.py
+│   │   │   ├── health_metric.py
+│   │   │   └── health_observation.py
+│   │   │
+│   │   ├── models/
+│   │   │   ├── astronaut.py
+│   │   │   ├── health_metric.py
+│   │   │   └── health_observation.py
+│   │   │
+│   │   ├── routers/
+│   │   │   ├── auth.py
+│   │   │   ├── astronaut.py
+│   │   │   ├── health.py
+│   │   │   ├── alerts.py
+│   │   │   ├── websocket.py
+│   │   │   └── ai.py
+│   │   │
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   │   ├── ai_service.py
+│   │   │   └── websocket_service.py
+│   │   │
+│   │   ├── dependencies.py
+│   │   ├── database.py
+│   │   └── main.py
+│   │
+│   ├── requirements.txt
+│   └── .env.example
 │
 ├── frontend/
-│
-├── supabase/
-│
-├── docs/
-│
-├── README.md
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── features/
+│   │   ├── hooks/
+│   │   ├── layouts/
+│   │   ├── lib/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   ├── package.json
+│   ├── package-lock.json
+│   └── .env.example
 │
 ├── .gitignore
-│
-├── .env
-│
-└── .env.example
+└── README.md
 ```
 
-### Folder Responsibilities
-
-| Folder | Description |
-|---|---|
-| `backend/` | FastAPI backend, APIs, WebSockets, and server-side logic |
-| `frontend/` | React application and user interface |
-| `supabase/` | PostgreSQL database schema and SQL migrations |
-| `docs/` | Project documentation and technical resources |
-
-The internal folders and files will be organized as development progresses.
+Note: This is a representative structure. Some folders may contain additional files as development progresses.
 
 ---
 
-## 📊 Data Management
+## Health Monitoring
 
-AstroHealth will initially use **simulated health data** rather than actual live astronaut sensor data.
+Health observations are stored in the database and associated with the authenticated astronaut.
 
-### Simulated Health Data
+Each observation can contain:
 
-The system will generate demonstration readings for:
-
-- Heart rate.
-- SpO₂.
-- Body temperature.
-- Activity.
-- Sleep.
-- Mood and well-being.
-
-The readings will be generated at regular intervals to demonstrate real-time monitoring.
-
-### Data Storage
-
-Health readings will be stored in Supabase PostgreSQL with relevant information such as:
-
-- Astronaut ID.
-- Timestamp.
-- Health indicator values.
+- Metric identifier.
+- Numeric or text value.
+- Measurement unit.
+- Observation timestamp.
 - Data source.
+- Measurement method.
+- Quality status.
+- Processing level.
+- Additional metadata.
 
-### Data Transparency
+### Health Data Sources
 
-All generated readings will be clearly identified as simulated.
+The system supports the following data source classifications:
 
-The prototype will not claim that synthetic readings represent actual astronaut medical measurements.
+| Source | Description |
+|---|---|
+| SIMULATED | Generated data for development and demonstration. |
+| MANUAL | Information entered manually. |
+| SENSOR | Data originating from a connected sensor. |
+
+The current implementation primarily uses simulated health observations.
+
+### Data Quality
+
+Health observations also include quality information, allowing the application to distinguish valid, suspect, and invalid observations.
+
+This helps prevent invalid readings from being treated as reliable health information.
 
 ---
 
-## 🔄 Application Workflow
+## Real-Time Communication
 
-The initial application workflow will be:
+AstroHealth uses FastAPI WebSockets to provide real-time communication between the backend and frontend.
+
+The WebSocket endpoint is:
 
 ```text
-Astronaut Login
-      |
-      v
-Personal Dashboard
-      |
-      v
-Simulated Health Readings
-      |
-      v
-FastAPI Backend
-      |
-      v
-Data Processing
-      |
-      +------------------+
-      |                  |
-      v                  v
-PostgreSQL          Alert Generation
-      |                  |
-      +--------+---------+
-               |
-               v
-       FastAPI WebSockets
-               |
-               v
-       Dashboard Updates
-               |
-               v
-        AI Health Assistant
+/ws/health
+```
+
+### Authentication
+
+The frontend establishes a WebSocket connection and sends an authentication message containing the access token.
+
+Example:
+
+```json
+{
+  "type": "authenticate",
+  "access_token": "YOUR_ACCESS_TOKEN"
+}
+```
+
+### Real-Time Events
+
+The system supports events such as:
+
+- `connected` - Confirms successful connection.
+- `health_update` - Sends updated health observations.
+- `new_alert` - Notifies the frontend about a newly generated alert.
+
+The frontend listens for these events and updates relevant dashboard information without requiring a full page reload.
+
+---
+
+## Alert Management
+
+AstroHealth uses rule-based alert generation.
+
+When a health observation meets a configured alert condition, the backend can generate an alert associated with the astronaut.
+
+### Alert Lifecycle
+
+```text
+       NEW
+        |
+        v
+  ACKNOWLEDGED
+        |
+        v
+     RESOLVED
+```
+
+Users can review alerts, acknowledge them, and mark them as resolved.
+
+Alert thresholds are application rules and should not be interpreted as a complete medical assessment.
+
+---
+
+## AI Health Assistant
+
+The AI assistant provides conversational access to general health information.
+
+### AI Integration
+
+- Provider: Groq
+- API compatibility: OpenAI-compatible API
+- Model: `openai/gpt-oss-20b`
+- Backend integration: OpenAI Python SDK
+
+### How It Works
+
+1. The astronaut submits a question through the frontend.
+2. The backend identifies the authenticated astronaut.
+3. The backend retrieves the astronaut's latest available health observations.
+4. Relevant health information is prepared as context.
+5. The context and question are sent to the Groq API.
+6. The generated response is returned to the frontend.
+
+### Example Questions
+
+- What does my heart rate indicate?
+- What are my latest health readings?
+- How can I improve my sleep?
+- What does my oxygen saturation reading mean?
+
+The assistant is instructed not to invent missing readings, diagnose diseases, or prescribe medication.
+
+---
+
+## Authentication and Security
+
+AstroHealth uses Supabase Authentication for user authentication.
+
+### Authentication Features
+
+- User registration.
+- Email verification.
+- User login.
+- Access token validation.
+- Refresh token rotation.
+- Authenticated API requests.
+
+### Backend Authentication
+
+FastAPI verifies the supplied access token through Supabase and uses the authenticated user identity to retrieve the corresponding astronaut profile.
+
+### Data Ownership
+
+Health observations and alerts are associated with astronaut profiles.
+
+Backend queries are scoped to the authenticated astronaut to prevent users from accessing another astronaut's private health records.
+
+### Security Practices
+
+- Environment variables are used for sensitive configuration.
+- API requests use bearer-token authentication.
+- Database credentials and API keys should never be committed to GitHub.
+- CORS is configured for the frontend development origin.
+- Authentication and authorization are handled on the backend.
+
+---
+
+## Database Design
+
+AstroHealth uses PostgreSQL through Supabase.
+
+Important database entities include:
+
+| Entity | Responsibility |
+|---|---|
+| User Authentication | Stores and manages authentication identities through Supabase Auth. |
+| Astronaut Profiles | Stores astronaut profile information and links it to the authenticated user. |
+| Health Metrics | Defines available health metrics and their units. |
+| Health Observations | Stores individual health readings. |
+| Data Sources | Identifies where health data originates. |
+| Alerts | Stores health-related alerts and their statuses. |
+
+The backend uses SQLAlchemy to interact with PostgreSQL.
+
+Existing database tables are managed through the established database schema rather than automatically recreating tables during application startup.
+
+---
+
+## API Endpoints
+
+The backend exposes REST APIs through FastAPI.
+
+Base URL:
+
+```text
+http://127.0.0.1:8000
+```
+
+Interactive API documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/auth/signup` | Register a new user. |
+| POST | `/auth/login` | Authenticate a user. |
+| POST | `/auth/refresh` | Refresh authentication tokens. |
+| GET | `/auth/me` | Retrieve the authenticated user's information. |
+
+### Astronaut Profile
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/astronaut/profile` | Retrieve the astronaut profile. |
+| POST | `/astronaut/profile` | Create an astronaut profile. |
+| PATCH | `/astronaut/profile` | Update profile information. |
+
+### Health Monitoring
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/health/metrics` | Retrieve available health metrics. |
+| POST | `/health/observations` | Create a health observation. |
+| GET | `/health/observations` | Retrieve health observation history. |
+| GET | `/health/observations/{observation_id}` | Retrieve a specific observation. |
+| POST | `/health/simulate` | Generate simulated health observations. |
+
+### Alerts
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/alerts` | Retrieve astronaut alerts. |
+| GET | `/alerts/{alert_id}` | Retrieve a specific alert. |
+| PATCH | `/alerts/{alert_id}/status` | Update an alert status. |
+
+### AI Assistant
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/ai/guidance` | Generate AI-powered health guidance. |
+
+### WebSocket
+
+| Type | Endpoint | Description |
+|---|---|---|
+| WebSocket | `/ws/health` | Real-time health updates and alerts. |
+
+All protected endpoints require appropriate authentication.
+
+---
+
+## Installation and Setup
+
+### Prerequisites
+
+Install the following before running AstroHealth:
+
+- Python 3.11 or a compatible supported Python version.
+- Node.js and npm.
+- Git.
+- A Supabase project.
+- A Groq API key.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Muhammad-Hassaan9/Astro-Health-Hackathon-Project.git
+```
+
+Navigate to the project:
+
+```bash
+cd Astro-Health-Hackathon-Project
+```
+
+### 2. Backend Setup
+
+Navigate to the backend directory:
+
+```bash
+cd backend
+```
+
+Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate it on Windows:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+Install backend dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Backend Environment Configuration
+
+Create a `.env` file inside the backend directory.
+
+Configure the required environment variables according to `app/core/config.py`.
+
+These include the database connection, Supabase authentication configuration, and Groq API key.
+
+Do not commit the `.env` file.
+
+### 4. Frontend Setup
+
+Open another terminal and navigate to the frontend directory:
+
+```bash
+cd frontend
+```
+
+Install frontend dependencies:
+
+```bash
+npm install
+```
+
+Configure frontend environment variables if required by the frontend configuration.
+
+The frontend uses the local FastAPI backend by default:
+
+```text
+http://127.0.0.1:8000
 ```
 
 ---
 
-## 🔐 Security and Privacy
+## Running the Application
 
-Security and privacy are important considerations in AstroHealth.
+AstroHealth requires the backend and frontend development servers to run separately.
 
-The following practices will be considered:
+### Start the Backend
 
-- Authentication through Supabase Auth.
-- Protected backend API endpoints.
-- User-specific access to health records.
-- Secure handling of environment variables.
-- API keys will remain on the backend.
-- Sensitive credentials will not be committed to GitHub.
-- AI requests will use synthetic or non-identifying demonstration data.
-- Access permissions will be enforced by the backend and database policies where applicable.
+From the backend directory:
 
----
+```bash
+python -m uvicorn app.main:app --reload
+```
 
-## ⚠️ Project Limitations
+Backend:
 
-AstroHealth is an educational prototype and demonstration system.
+```text
+http://127.0.0.1:8000
+```
 
-It has the following limitations:
+API Documentation:
 
-1. Health readings are simulated and are not collected from actual astronauts.
-2. The prototype does not connect to real wearable devices or medical sensors.
-3. AI-generated suggestions are general information and not medical diagnoses.
-4. Alert thresholds are illustrative prototype rules, not certified medical thresholds.
-5. The system is not a certified medical device.
-6. The application does not replace medical professionals or mission medical teams.
-7. The system does not provide verified real-time NASA astronaut telemetry.
+```text
+http://127.0.0.1:8000/docs
+```
 
----
+### Start the Frontend
 
-## 🚀 Future Goals
+From the frontend directory:
 
-The following features may be considered for future development:
+```bash
+npm run dev
+```
 
-### 1. Admin / Centralized Mission Control Dashboard
+Frontend:
 
-A centralized dashboard for authorized mission control personnel to:
+```text
+http://localhost:5173
+```
 
-- View multiple astronauts.
-- Monitor their health statuses.
-- Review health alerts.
-- Compare health trends.
-- Access authorized astronaut health records.
+Open the frontend URL in your browser and register or log in to access the application.
 
-### 2. Wearable Sensor Integration
+### Production Frontend Build
 
-Integration with actual wearable devices or sensor systems to collect health readings instead of relying only on simulated data.
+To create a production build:
 
-### 3. Advanced Health Analysis
+```bash
+npm run build
+```
 
-Explore more advanced data analysis and machine learning approaches to identify unusual health patterns.
-
-### 4. NASA Research Data Integration
-
-Integrate relevant publicly available NASA research datasets to provide additional scientific context and research insights.
-
-### 5. Enhanced Monitoring
-
-Explore additional indicators and monitoring capabilities related to astronaut health and spaceflight conditions.
+The generated production files are placed in the frontend `dist` directory.
 
 ---
 
-## ⚙️ Installation and Setup
+## Current Limitations
 
-The application is currently under development. Detailed installation and configuration instructions will be added as the backend and frontend components are implemented.
+AstroHealth is currently a prototype developed for demonstration and hackathon purposes.
 
-The planned development environment includes:
+Current limitations include:
 
-- Python and FastAPI for the backend.
-- Node.js and React.js for the frontend.
-- Supabase for PostgreSQL and authentication.
-- Google Gemini API for AI integration.
-
-Environment variables and API credentials will be configured locally and must not be committed to the public repository.
-
----
-
-## 👥 Team and Contributions
-
-AstroHealth is being developed as a collaborative project for the NASA Space Apps Challenge 2026.
-
-Team members will contribute to different areas of the application, including:
-
-- Frontend development.
-- Backend development.
-- Database design.
-- AI integration.
-- Testing and documentation.
-
-Contributions and improvements will be managed through Git and GitHub.
+1. Health readings are primarily simulated rather than collected from actual astronaut wearable devices.
+2. Real hardware and sensor integration has not yet been implemented.
+3. AI-generated guidance is informational and is not a substitute for professional medical evaluation.
+4. The alert system uses configured application rules and is not a certified medical alerting system.
+5. The current interface focuses on the individual astronaut dashboard. A complete multi-astronaut Mission Control dashboard is a potential future enhancement.
+6. Real mission deployment, space-qualified hardware integration, and validation in operational environments have not been performed.
 
 ---
 
-## 📜 Disclaimer
+## Future Improvements
 
-AstroHealth is an educational and experimental software prototype developed to demonstrate astronaut health monitoring concepts.
+Potential future development includes:
 
-It is not an official NASA product, is not affiliated with or endorsed by NASA, and is not intended for actual medical decision-making.
-
-All health readings generated by the initial prototype are simulated.
+- Integration with wearable health monitoring devices.
+- Real-time sensor data collection.
+- Secure multi-astronaut Mission Control dashboard.
+- Advanced health trend analysis.
+- Improved anomaly detection.
+- Historical health reports and analytics.
+- More comprehensive sleep and physical activity monitoring.
+- AI-assisted health trend summaries.
+- Offline data handling and synchronization.
+- Enhanced testing, deployment, and monitoring.
 
 ---
 
-**Built for exploring technology-driven solutions to astronaut health monitoring.** 🚀
+## Disclaimer
+
+AstroHealth is an experimental software prototype created for the NASA Space Apps Challenge 2026.
+
+It is not an official NASA product, certified medical device, or substitute for professional medical advice.
+
+Health readings used in the current demonstration may be simulated. AI-generated responses are intended for general informational and wellness purposes only.
+
+---
+
+## Acknowledgements
+
+Developed as a project for:
+
+**NASA Space Apps Challenge 2026**
+
+Challenge 4: Create Health Monitoring Software for Astronauts on Space Missions.
+
+---
+
+## License
+
+No license has been specified yet. Unless a license is added to this repository, the project should be treated as having all rights reserved by its respective contributors.
+
+---
+
+**AstroHealth - Supporting Astronaut Health Through Technology.** 🚀
