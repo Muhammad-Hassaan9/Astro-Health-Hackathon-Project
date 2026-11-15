@@ -5,35 +5,33 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy.orm import Session
 
 from app.schemas.auth import UserResponse
+from app.database import get_db
+from app.crud.astronaut import get_astronaut_by_user_id
+from app.models.astronaut import Astronaut
 
-# Load environment variables from project root
 ROOT_DIR = Path(__file__).resolve().parents[1].parent
 load_dotenv(ROOT_DIR / ".env", override=True)
 
-# Supabase configuration
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
-# Bearer token authentication
 security = HTTPBearer()
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ) -> UserResponse:
 
-    # Check Supabase configuration
     if not SUPABASE_URL or not SUPABASE_ANON_KEY:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Supabase authentication is not configured."
         )
 
-    # Get access token
     access_token = credentials.credentials
 
-    # Verify token through Supabase Auth
     headers = {
         "apikey": SUPABASE_ANON_KEY,
         "Authorization": f"Bearer {access_token}"
@@ -62,3 +60,21 @@ async def get_current_user(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Unable to connect to Supabase authentication service."
         )
+
+def get_current_astronaut(
+    current_user: UserResponse = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> Astronaut:
+
+    astronaut = get_astronaut_by_user_id(
+        db,
+        current_user.id
+    )
+
+    if astronaut is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Astronaut profile not found for this user."
+        )
+
+    return astronaut

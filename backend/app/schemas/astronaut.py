@@ -56,14 +56,15 @@ class AstronautUpdate(BaseModel):
     @field_validator("display_name")
     @classmethod
     def validate_display_name(cls, value: str | None) -> str | None:
-        if value is not None:
-            value = value.strip()
+        if value is None:
+            raise ValueError("Display name cannot be null.")
 
-            if not value:
-                raise ValueError("Display name cannot be empty.")
+        value = value.strip()
+
+        if not value:
+            raise ValueError("Display name cannot be empty.")
 
         return value
-
 
 class AstronautResponse(BaseModel):
     id: UUID

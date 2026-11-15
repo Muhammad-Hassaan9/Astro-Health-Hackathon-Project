@@ -19,7 +19,7 @@ def create_health_observation(
         astronaut_id=astronaut_id,
         source_id=source_id,
         data_status=data_status,
-        **observation_data.model_dum()
+        **observation_data.model_dump()
     )
 
     try:

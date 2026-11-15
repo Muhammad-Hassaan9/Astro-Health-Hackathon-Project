@@ -1,13 +1,31 @@
-from fastapi import FastAPI
-
+from fastapi import FastAPI, Depends
 from sqlalchemy import text
-from app.database import engine
-
-from fastapi import Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
 
-app = FastAPI(title="AstroHealth API")
+from app.database import engine, get_db
+
+from app.routers import (
+    auth_router,
+    health_router,
+    alerts_router,
+    websocket_router,
+    astronaut_router,
+    ai_router,
+)
+
+app = FastAPI(
+    title="AstroHealth API",
+    description="Astronaut Health Monitoring System API",
+    version="1.0.0",
+)
+
+# Register API routers
+app.include_router(auth_router)
+app.include_router(astronaut_router)
+app.include_router(health_router)
+app.include_router(alerts_router)
+app.include_router(websocket_router)
+app.include_router(ai_router)
 
 @app.get("/")
 def home():
@@ -23,4 +41,5 @@ def database_check():
 @app.get("/db-session-check")
 def db_session_check(db: Session = Depends(get_db)):
     db.execute(text("SELECT 1"))
+
     return {"database_session": "working"}
