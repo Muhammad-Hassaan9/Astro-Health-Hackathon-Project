@@ -1,13 +1,35 @@
+
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, Uuid, func, text
+from sqlalchemy import (
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    String,
+    Text,
+    Uuid,
+    func,
+    text
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
 
+
 class Alert(Base):
     __tablename__ = "alerts"
+
+    __table_args__ = (
+        CheckConstraint(
+            "severity IN ('INFO', 'WARNING', 'CRITICAL')",
+            name="alerts_severity_check"
+        ),
+        CheckConstraint(
+            "status IN ('NEW', 'ACKNOWLEDGED', 'RESOLVED')",
+            name="alerts_status_check"
+        ),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),
@@ -17,13 +39,19 @@ class Alert(Base):
 
     astronaut_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),
-        ForeignKey("astronaut_profiles.id"),
+        ForeignKey(
+            "astronaut_profiles.id",
+            ondelete="CASCADE"
+        ),
         nullable=False
     )
 
     observation_id: Mapped[uuid.UUID | None] = mapped_column(
         Uuid(as_uuid=True),
-        ForeignKey("health_observations.id"),
+        ForeignKey(
+            "health_observations.id",
+            ondelete="SET NULL"
+        ),
         nullable=True
     )
 
@@ -33,10 +61,25 @@ class Alert(Base):
         server_default=text("'DATA_QUALITY'")
     )
 
-    severity: Mapped[str] = mapped_column(String, nullable=False)
-    title: Mapped[str] = mapped_column(String, nullable=False)
-    message: Mapped[str] = mapped_column(Text, nullable=False)
-    recommended_action: Mapped[str | None] = mapped_column(Text, nullable=True)
+    severity: Mapped[str] = mapped_column(
+        String,
+        nullable=False
+    )
+
+    title: Mapped[str] = mapped_column(
+        String,
+        nullable=False
+    )
+
+    message: Mapped[str] = mapped_column(
+        Text,
+        nullable=False
+    )
+
+    recommended_action: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True
+    )
 
     status: Mapped[str] = mapped_column(
         String,

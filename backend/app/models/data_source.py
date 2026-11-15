@@ -1,13 +1,20 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, String, Text, Uuid, func
+from sqlalchemy import DateTime, String, Text, Uuid, func,CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
 
 class DataSource(Base):
     __tablename__ = "data_sources"
+    __table_args__ = (
+        CheckConstraint(
+            "source_type IN "
+            "('SIMULATED', 'MANUAL', 'SENSOR', 'NASA_DATASET', 'OTHER')",
+            name="data_sources_source_type_check"
+        ),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),

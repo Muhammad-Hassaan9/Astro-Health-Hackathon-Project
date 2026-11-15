@@ -1,13 +1,19 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, String, Text, Uuid, func, text
+from sqlalchemy import Boolean, DateTime, String, Text, Uuid, func, text,CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
 
 class HealthMetric(Base):
     __tablename__ = "health_metrics"
+    __table_args__ = (
+        CheckConstraint(
+            "data_type IN ('numeric', 'text')",
+            name="health_metrics_data_type_check"
+        ),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),
@@ -15,7 +21,7 @@ class HealthMetric(Base):
         server_default=func.gen_random_uuid()
     )
 
-    code: Mapped[str] = mapped_column(String, nullable=False)
+    code: Mapped[str] = mapped_column(String, nullable=False,unique=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     category: Mapped[str] = mapped_column(String, nullable=False)
     definition: Mapped[str] = mapped_column(Text, nullable=False)
