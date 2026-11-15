@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.models.alert import Alert
 from app.schemas.alert import AlertStatusUpdate
+from datetime import datetime, timezone
 
 def get_alerts_by_astronaut_id(
     db: Session,
@@ -57,6 +58,10 @@ def update_alert_status(
 
     try:
         alert.status = status_data.status
+        if status_data.status == "RESOLVED":
+            alert.resolved_at = datetime.now(timezone.utc)
+        else:
+            alert.resolved_at = None
 
         db.commit()
         db.refresh(alert)

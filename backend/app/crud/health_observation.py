@@ -4,12 +4,13 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.health_observation import HealthObservation
-from app.schemas.health_observation import HealthObservationCreate
+from app.schemas.health_observation import HealthObservationCreate,DataStatus
 
 def create_health_observation(
     db: Session,
     astronaut_id: UUID,
     source_id: UUID,
+    data_status: DataStatus,
     observation_data: HealthObservationCreate
 ) -> HealthObservation:
     """Save a health observation for an astronaut."""
@@ -17,7 +18,8 @@ def create_health_observation(
     observation = HealthObservation(
         astronaut_id=astronaut_id,
         source_id=source_id,
-        **observation_data.model_dump()
+        data_status=data_status,
+        **observation_data.model_dum()
     )
 
     try:
