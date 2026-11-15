@@ -1,13 +1,38 @@
+
 from datetime import date, datetime
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+
 class AstronautCreate(BaseModel):
-    display_name: str = Field(min_length=1, max_length=255)
+    display_name: str = Field(
+        min_length=1,
+        max_length=255
+    )
+
     date_of_birth: date | None = None
-    mission_name: str | None = None
-    mission_role: str | None = None
+
+    mission_name: str | None = Field(
+        default=None,
+        max_length=255
+    )
+
+    mission_role: str | None = Field(
+        default=None,
+        max_length=255
+    )
+
+    @field_validator("display_name")
+    @classmethod
+    def validate_display_name(cls, value: str) -> str:
+        value = value.strip()
+
+        if not value:
+            raise ValueError("Display name cannot be empty.")
+
+        return value
+
 
 class AstronautUpdate(BaseModel):
     display_name: str | None = Field(
@@ -15,16 +40,30 @@ class AstronautUpdate(BaseModel):
         min_length=1,
         max_length=255
     )
+
     date_of_birth: date | None = None
-    mission_name: str | None = None
-    mission_role: str | None = None
+
+    mission_name: str | None = Field(
+        default=None,
+        max_length=255
+    )
+
+    mission_role: str | None = Field(
+        default=None,
+        max_length=255
+    )
 
     @field_validator("display_name")
     @classmethod
-    def validate_display_name(cls, value):
-        if value is not None and not value.strip():
-            raise ValueError("Display name cannot be empty.")
+    def validate_display_name(cls, value: str | None) -> str | None:
+        if value is not None:
+            value = value.strip()
+
+            if not value:
+                raise ValueError("Display name cannot be empty.")
+
         return value
+
 
 class AstronautResponse(BaseModel):
     id: UUID

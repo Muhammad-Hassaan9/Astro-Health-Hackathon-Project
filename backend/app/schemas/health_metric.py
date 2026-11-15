@@ -1,7 +1,15 @@
+
 from datetime import datetime
+from enum import Enum
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
+
+
+class MetricDataType(str, Enum):
+    NUMERIC = "numeric"
+    TEXT = "text"
+
 
 class HealthMetricResponse(BaseModel):
     id: UUID
@@ -10,7 +18,7 @@ class HealthMetricResponse(BaseModel):
     category: str
     definition: str
     measurement_method: str | None
-    data_type: str
+    data_type: MetricDataType
     unit: str | None
     is_active: bool
     created_at: datetime

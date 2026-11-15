@@ -1,26 +1,27 @@
+
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-# Signup Request
+
 class SignupRequest(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=8, max_length=128)
 
-# Login Request
+
 class LoginRequest(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=1, max_length=128)
 
-# Authentication Response
+
 class AuthResponse(BaseModel):
-    access_token: str | None = None
+    access_token: str
     refresh_token: str | None = None
     token_type: str = "bearer"
     user_id: UUID
     message: str
 
-# Authenticated User Response
+
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
