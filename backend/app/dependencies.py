@@ -10,7 +10,7 @@ from app.schemas.auth import UserResponse
 
 # Load environment variables from project root
 ROOT_DIR = Path(__file__).resolve().parents[1].parent
-load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ROOT_DIR / ".env", override=True)
 
 # Supabase configuration
 SUPABASE_URL = os.getenv("SUPABASE_URL")

@@ -14,9 +14,11 @@ class LoginRequest(BaseModel):
 
 # Authentication Response
 class AuthResponse(BaseModel):
-    access_token: str
+    access_token: str | None = None
+    refresh_token: str | None = None
     token_type: str = "bearer"
     user_id: UUID
+    message: str
 
 # Authenticated User Response
 class UserResponse(BaseModel):
